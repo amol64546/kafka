@@ -1,30 +1,24 @@
 package com.consumer;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 @Slf4j
 public class KafkaConsumer {
 
-
-  @KafkaListener(topics = "${kafka.topic}", groupId = "${kafka.group-id}")
-  public void consume(@Payload String message) {
-    log.info("Consumed message: {}", message);
-
-    ObjectMapper objectMapper = new ObjectMapper();
-    try {
-      Person person = objectMapper.readValue(message, Person.class);
-      log.info("Person : {}", person);
-      log.info("Person clazz : {}", person.getClass());
-    } catch (JsonProcessingException e) {
-      log.error("Error while reading message into PersonDto", e);
-    }
-
+  @KafkaListener(topics = "construct-data",
+    containerFactory = "mappingpayloadKafkaListenerContainerFactory")
+  public void receive(@Payload String msg, final @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
+    final @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
+    final @Header(KafkaHeaders.OFFSET) int offset, Acknowledgment ack) {
+    log.info("Received message: {} from topic: {} partition: {} offset: {}", msg, topic, partition,
+      offset);
   }
 
 }

@@ -34,6 +34,11 @@
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.aidtaas.mobius</groupId>
+      <artifactId>kafka-wrapper-lib</artifactId>
+      <version>0.0.6</version>
+    </dependency>
   </dependencies>
 
 
@@ -42,6 +47,9 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <mainClass>com.consumer.Consumer</mainClass>
+        </configuration>
       </plugin>
     </plugins>
   </build>
